@@ -1,7 +1,6 @@
 package beans;
 
 import java.io.Serializable;
-
 import javax.faces.bean.ManagedBean;
 import javax.faces.bean.SessionScoped;
 
@@ -16,7 +15,11 @@ public class User implements Serializable {
 	public String getName() {
 		return name;
 	}
-
+	
+	/**
+	 * Defining user's name.
+	 * @param name - user's name as String.
+	 */
 	public void setName(String name) {
 		this.name = name;
 	}
