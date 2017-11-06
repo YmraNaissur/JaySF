@@ -1,0 +1,66 @@
+<!DOCTYPE html>
+<html lang="en"
+	xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:h="http://xmlns.jcp.org/jsf/html"
+	xmlns:f="http://xmlns.jcp.org/jsf/core">
+	
+	<h:head>
+		<title>Student TWO registration with range and length validation</title>
+		
+		<style>
+			.error {
+				color: red;
+				font-style: italic;
+			}
+		</style>
+	</h:head>
+	
+	<h:body>
+		<h:form>
+			<!-- <h:messages styleClass="error" /> -->
+		
+			First name: <h:inputText value="#{studTwo.firstName}" label="First name" id="first_name" />
+			<br/><br/>
+			
+			Last name: <h:inputText value="#{studTwo.lastName}"
+									label="Last name"
+									id="last_name"
+									required="true" />
+			&#160;<h:message for="last_name" styleClass="error" />
+			<br/><br/>
+			
+			Free passes: <h:inputText value="#{studTwo.freePasses}"
+									  label="Free passes"
+									  id="free_passes">
+							<f:validateLongRange minimum="0" maximum="10" />
+						 </h:inputText>
+			&#160;<h:message for="free_passes" styleClass="error" />
+			<br/><br/>
+			
+			Postal code: <h:inputText value="#{studTwo.postalCode}"
+									  label="Postal code"
+									  id="postal_code"
+									  required="true">
+							<f:validateLength minimum="5" maximum="5" />
+						 </h:inputText>
+			&#160;<h:message for="postal_code" styleClass="error" />
+			<br/><br/>
+			
+			<h:commandButton value="Submit" action="student_two_response" />
+		</h:form>
+	</h:body>
+</html>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
