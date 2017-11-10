@@ -1,0 +1,32 @@
+<!DOCTYPE html>
+<html lang="en"
+	xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:h="http://xmlns.jcp.org/jsf/html"
+	xmlns:f="http://xmlns.jcp.org/jsf/core">
+	
+	<h:head>
+		<title>Counter two - application scoped</title>
+		
+		<style>
+			.alignRight {
+				text-align: right;
+			}
+			.alignLeft {
+				text-align: left;
+			}
+		</style>
+	</h:head>
+	
+	<h:body>
+		<h3>Managed bean scopes - application scope test.</h3>
+		<hr/>
+		<h:form>
+			<h:panelGrid columns="2" styleClass="alignRight,alignLeft">
+				<h:outputText value="Counter value:" />
+				<h:outputText value="#{counterTwo.value}" />
+				<h:commandButton value="Increment" action="#{counterTwo.increment}" />
+				<h:panelGroup />
+			</h:panelGrid>
+		</h:form>
+	</h:body>
+</html>
