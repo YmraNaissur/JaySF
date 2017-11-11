@@ -35,4 +35,12 @@
   <listener>
     <listener-class>com.sun.faces.config.ConfigureListener</listener-class>
   </listener>
+  
+  <!-- Define connection pool reference -->
+  <resource-ref>
+  	<description>Student Tracker Datasource</description>
+  	<res-ref-name>jdbc/student_tracker</res-ref-name>
+  	<res-type>javax.sql.DataSource</res-type>
+  	<res-auth>Container</res-auth>
+  </resource-ref>
 </web-app>
