@@ -7,5 +7,5 @@
 			  maxActive="20" maxIdle="5" maxWait="10000"
 			  username="demo" password="demo"
 			  driverClassName="com.mysql.jdbc.Driver"
-			  url="jdbc:mysql://localhost:3306/student_tracker" />
+			  url="jdbc:mysql://localhost:3306/student_tracker?useSSL=true" />
 </Context>
