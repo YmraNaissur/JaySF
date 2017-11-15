@@ -52,6 +52,28 @@ public class StudentController {
 	}
 	
 	/**
+	 * Add student to the database.
+	 * @param student - an object of class Student.
+	 */
+	public String addStudent(Student student) {
+		logger.info("Adding student: " + student);
+		
+		try {
+			// Add student to the database
+			int affectedRows = studentDbUtil.addStudent(student);
+			logger.info(affectedRows + " rows were affected.");
+		} catch (Exception e) {
+			// Send this to server logs
+			logger.log(Level.SEVERE, "Error adding student", e);
+			
+			// Add error message for JSF page
+			addErrorMessage(e);
+		}
+		
+		return "list-students";
+	}
+	
+	/**
 	 *  Send an error message to the faces context
 	 *  @param e - exception.
 	 */

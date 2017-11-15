@@ -2,7 +2,7 @@ package com.naissur.jsf.jdbc;
 
 import javax.faces.bean.ManagedBean;
 
-@ManagedBean
+@ManagedBean(name = "studentBean")
 public class Student {
 	private int id;
 	private String firstName;

@@ -1,7 +1,9 @@
 package com.naissur.jsf.jdbc;
 
 import java.sql.Connection;
+import java.sql.PreparedStatement;
 import java.sql.ResultSet;
+import java.sql.SQLException;
 import java.sql.Statement;
 import java.util.ArrayList;
 import java.util.List;
@@ -51,7 +53,7 @@ public class StudentDbUtil {
 		
 		String sql = "select * from student order by last_name";
 		
-		try (Connection conn = dataSource.getConnection();
+		try (Connection conn = getConnection();
 			 Statement stmt = conn.createStatement();
 			 ResultSet rs = stmt.executeQuery(sql)) {
 			
@@ -74,5 +76,36 @@ public class StudentDbUtil {
 		}
 		
 		return students;
+	}
+	
+	/**
+	 * Add student to the database.
+	 * @param student - an object of class Student.
+	 * @return the number of updated rows in the database.
+	 */
+	public int addStudent(Student student) {
+		String sql = "insert into student (first_name, last_name, email) values (?, ?, ?)";
+		int affectedRows = 0;
+		
+		try (Connection conn = getConnection();
+			 PreparedStatement stmt = conn.prepareStatement(sql)) {
+			
+			// Prepare SQL query
+			stmt.setString(1, student.getFirstName());
+			stmt.setString(2, student.getLastName());
+			stmt.setString(3, student.getEmail());
+			
+			// Update the database
+			affectedRows = stmt.executeUpdate();
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+		
+		return affectedRows;
+	}
+
+	/** Retrieve connection to the data source */
+	private Connection getConnection() throws SQLException {
+		return dataSource.getConnection();
 	}
 }
