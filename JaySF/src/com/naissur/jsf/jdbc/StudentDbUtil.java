@@ -79,6 +79,77 @@ public class StudentDbUtil {
 	}
 	
 	/**
+	 * Get student with specified ID from the database.
+	 * @param id - student's ID.
+	 * @return an object of class Student with the specified ID.
+	 */
+	public Student getStudent(int id) {
+		Student student = null;
+		ResultSet rs = null;
+		
+		String sql = "select * from student where id=?";
+		
+		try (Connection conn = getConnection();
+			 PreparedStatement stmt = conn.prepareStatement(sql)) {
+			
+			// Prepare SQL query
+			stmt.setInt(1, id);
+			rs = stmt.executeQuery();
+			
+			if (rs.next()) {
+				// Create a new student class from the retrieved data
+				int studentId = rs.getInt("id");
+				String firstName = rs.getString("first_name");
+				String lastName = rs.getString("last_name");
+				String email = rs.getString("email");
+				student = new Student(studentId, firstName, lastName, email);
+			} else {
+				throw new Exception("Could not find student with id = " + id);
+			}
+		} catch (Exception e) {
+			e.printStackTrace();
+		} finally {
+			// Close the result set if it is not null
+			if (rs != null) {
+				try {
+					rs.close();
+				} catch (SQLException e) {
+					e.printStackTrace();
+				}
+			}
+		}
+		
+		return student;
+	}
+	
+	/**
+	 * Update the student in the database.
+	 * @param student - an object of class Student.
+	 * @return the number of updated rows in the database.
+	 */
+	public int updateStudent(Student student) {
+		String sql = "update student set first_name=?,last_name=?,email=? where id=?";
+		int affectedRows = 0;
+		
+		try (Connection conn = getConnection();
+			 PreparedStatement stmt = conn.prepareStatement(sql)) {
+			
+			// Prepare SQL query
+			stmt.setString(1, student.getFirstName());
+			stmt.setString(2, student.getLastName());
+			stmt.setString(3, student.getEmail());
+			stmt.setInt(4, student.getId());
+			
+			// Update the database
+			affectedRows = stmt.executeUpdate();
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+		
+		return affectedRows;
+	}
+	
+	/**
 	 * Add student to the database.
 	 * @param student - an object of class Student.
 	 * @return the number of updated rows in the database.
@@ -104,7 +175,7 @@ public class StudentDbUtil {
 		return affectedRows;
 	}
 
-	/** Retrieve connection to the data source */
+	/** Retrieve connection to the data source. */
 	private Connection getConnection() throws SQLException {
 		return dataSource.getConnection();
 	}

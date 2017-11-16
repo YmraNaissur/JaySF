@@ -2,12 +2,14 @@ package com.naissur.jsf.jdbc;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
 import javax.faces.application.FacesMessage;
 import javax.faces.bean.ManagedBean;
 import javax.faces.bean.SessionScoped;
+import javax.faces.context.ExternalContext;
 import javax.faces.context.FacesContext;
 import javax.faces.event.ComponentSystemEvent;
 
@@ -52,6 +54,60 @@ public class StudentController {
 	}
 	
 	/**
+	 * Load student with the specified ID from the database.
+	 * @param id - student's ID.
+	 * @return an object of class Student with the specified ID.
+	 */
+	public String loadStudent(int id) {
+		logger.info("Loading student with id = " + id);
+		
+		try {
+			// Load student from the database
+			Student student = studentDbUtil.getStudent(id);
+			
+			// Put it in the request attribute... so we can use it on the form page
+			ExternalContext externalContext = FacesContext.getCurrentInstance().getExternalContext();
+			Map<String, Object> requestMap = externalContext.getRequestMap();
+			requestMap.put("studentBean", student);
+			
+		} catch (Exception e) {
+			// Send this to server logs
+			logger.log(Level.SEVERE, "Error loading student with id = " + id);
+			
+			// Add error message for JSF page
+			addErrorMessage(e);
+			
+			return null;
+		}
+		
+		return "update-student-form";
+	}
+	
+	/**
+	 * Update student in the database.
+	 * @param student - an object of class Student.
+	 */
+	public String updateStudent(Student student) {
+		logger.info("Updating student: " + student);
+		
+		try {
+			// Update student in the database
+			int affectedRows = studentDbUtil.updateStudent(student);
+			logger.info(affectedRows + " rows were affected.");
+		} catch (Exception e) {
+			// Send this to server logs
+			logger.log(Level.SEVERE, "Error updating student: " + student);
+			
+			// Add error message for JSF page
+			addErrorMessage(e);
+			
+			return null;
+		}
+		
+		return "list-students";
+	}
+	
+	/**
 	 * Add student to the database.
 	 * @param student - an object of class Student.
 	 */
@@ -68,6 +124,8 @@ public class StudentController {
 			
 			// Add error message for JSF page
 			addErrorMessage(e);
+			
+			return null;
 		}
 		
 		return "list-students";
