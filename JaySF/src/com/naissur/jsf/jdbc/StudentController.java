@@ -19,6 +19,7 @@ public class StudentController {
 	private List<Student> students;
 	private StudentDbUtil studentDbUtil;
 	private Logger logger = Logger.getLogger(getClass().getName());
+	private String searchName;
 	
 	// generate no-args constructor
 	
@@ -26,6 +27,8 @@ public class StudentController {
 		students = new ArrayList<>();
 		studentDbUtil = StudentDbUtil.getInstance();
 	}
+	
+	
 
 	/** Getter for the list of students.
 	 * @return List of objects of the class Student.
@@ -39,17 +42,27 @@ public class StudentController {
 	 */
 	public void loadStudents(ComponentSystemEvent event) {
 		logger.info("Loading students");
+		logger.info("Search name: " + searchName);
 		students.clear();
 		
 		try {
-			// Get all students from the database
-			students = studentDbUtil.getStudents();
+			// if there is a search name...
+			if (searchName != null && searchName.trim().length() > 0) {
+				// ... search for students by first or last name
+				students = studentDbUtil.getStudentsByName(searchName);
+			} else {
+				// else get all students from the database
+				students = studentDbUtil.getStudents();
+			}
 		} catch (Exception e) {
 			// Send this to server logs
 			logger.log(Level.SEVERE, "Error loading students", e);
 			
 			// Add error message for JSF page
 			addErrorMessage(e);
+		} finally {
+			// reset the search info
+			searchName = null;
 		}
 	}
 	
@@ -162,5 +175,15 @@ public class StudentController {
 	private void addErrorMessage(Exception e) {
 		FacesMessage message = new FacesMessage("Error: " + e.getMessage());
 		FacesContext.getCurrentInstance().addMessage(null, message);
+	}
+
+	// generate getter and setter methods for search name
+	
+	public String getSearchName() {
+		return searchName;
+	}
+
+	public void setSearchName(String searchName) {
+		this.searchName = searchName;
 	}
 }

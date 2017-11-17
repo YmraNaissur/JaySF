@@ -31,6 +31,16 @@
 				<h:button value="Add student" outcome="add-student-form" styleClass="add-student-button" />
 				
 				<h:form>
+					<h:panelGrid columns="3">
+						<h:outputLabel value="Search by last name: " />
+						<h:inputText value="#{studentController.searchName}" /> 
+						<h:commandButton value="Search" styleClass="add-student-button" style="margin-bottom:0px;"
+							action="list-students?faces-redirect=true" />
+					</h:panelGrid>
+				</h:form>
+				<div style="clear:both;"></div>
+				
+				<h:form>
 					<h:dataTable value="#{studentController.students}" var="tempStudent"
 								 styleClass="demo-table"
 								 headerClass="demo-table-header"

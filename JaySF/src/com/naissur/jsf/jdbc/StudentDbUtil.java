@@ -7,6 +7,7 @@ import java.sql.SQLException;
 import java.sql.Statement;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.logging.Logger;
 
 import javax.naming.Context;
 import javax.naming.InitialContext;
@@ -14,6 +15,7 @@ import javax.naming.NamingException;
 import javax.sql.DataSource;
 
 public class StudentDbUtil {
+	private static Logger logger = Logger.getLogger(StudentDbUtil.class.getName());
 	private static StudentDbUtil instance;
 	private DataSource dataSource;
 	private String jndiName = "java:comp/env/jdbc/student_tracker";
@@ -109,14 +111,7 @@ public class StudentDbUtil {
 		} catch (Exception e) {
 			e.printStackTrace();
 		} finally {
-			// Close the result set if it is not null
-			if (rs != null) {
-				try {
-					rs.close();
-				} catch (SQLException e) {
-					e.printStackTrace();
-				}
-			}
+			close(rs);
 		}
 		
 		return student;
@@ -198,9 +193,75 @@ public class StudentDbUtil {
 		
 		return affectedRows;
 	}
+	
+	/**
+	 * Search students by name (first and last).
+	 * @param searchName - substring, by which the search established.
+	 * For example, if we have students with last name of "Patel",
+	 * "Patterson" etc.,then we can search for "Pat"
+	 * @return a list of all students that had been found.
+	 */
+	public List<Student> getStudentsByName(String searchName) {
+		List<Student> resultList = new ArrayList<>();
+		
+		String sql = "";
+		PreparedStatement stmt = null;
+		ResultSet rs = null;
+		
+		try (Connection conn = getConnection()) {
+			// only search by name if searchName is not empty
+			if (searchName != null && searchName.trim().length() > 0) {
+				sql = "select * from student where lower(first_name) like ? or lower(last_name) like ?";
+				stmt = conn.prepareStatement(sql);
+				// Preparing SQL query
+				stmt.setString(1, "%" + searchName.toLowerCase() + "%");
+				stmt.setString(2, "%" + searchName.toLowerCase() + "%");
+			} else {
+				// create SQL to get all students
+				sql = "select * from student order by last_name";
+				stmt = conn.prepareStatement(sql);
+			}
+			
+			// Processing the result set
+			rs = stmt.executeQuery();
+			
+			while (rs.next()) {
+				int id = rs.getInt("id");
+				String fName = rs.getString("first_name");
+				String lName = rs.getString("last_name");
+				String email = rs.getString("email");
+				Student student = new Student(id, fName, lName, email);
+				logger.info("Student found: " + student);
+				resultList.add(student);
+			}
+			
+		} catch (Exception e) {
+			e.printStackTrace();
+		} finally {
+			close(rs, stmt);
+		}
+		
+		return resultList;
+	}
 
 	/** Retrieve connection to the data source. */
 	private Connection getConnection() throws SQLException {
 		return dataSource.getConnection();
+	}
+	
+	/**
+	 * Close the possible ResultSet or PreparedStatement if it is not null.
+	 * @param rs - the result set.
+	 */
+	private void close(AutoCloseable ... resources) {
+		for (AutoCloseable res: resources) {
+			if (res != null) {
+				try {
+					res.close();
+				} catch (Exception e) {
+					e.printStackTrace();
+				}
+			}
+		}
 	}
 }
