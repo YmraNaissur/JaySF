@@ -174,6 +174,30 @@ public class StudentDbUtil {
 		
 		return affectedRows;
 	}
+	
+	/**
+	 * Delete student from the database.
+	 * @param id - student's ID.
+	 * @return the number of affected rows in the database.
+	 */
+	public int deleteStudent(int id) {
+		String sql = "delete from student where id=?";
+		int affectedRows = 0;
+		
+		try (Connection conn = getConnection();
+			 PreparedStatement stmt = conn.prepareStatement(sql)) {
+			
+			// Prepare SQL query
+			stmt.setInt(1, id);
+			
+			// Update the database
+			affectedRows = stmt.executeUpdate();
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+		
+		return affectedRows;
+	}
 
 	/** Retrieve connection to the data source. */
 	private Connection getConnection() throws SQLException {

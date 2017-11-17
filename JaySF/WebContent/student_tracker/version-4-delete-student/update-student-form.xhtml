@@ -1,0 +1,63 @@
+<!DOCTYPE html>
+<html lang="en"
+	xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:h="http://xmlns.jcp.org/jsf/html"
+	xmlns:f="http://xmlns.jcp.org/jsf/core">
+	
+	<h:head>
+		<meta name="viewport" content="width=display-width, initial-scale=1.0" />
+		<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+		
+		<title>Student Tracker App</title>
+		
+		<h:outputStylesheet library="css" name="style.css" />
+		<h:outputStylesheet library="css" name="add-student-style.css" />
+	</h:head>
+	
+	<h:body>
+		<div id="wrapper">
+			<div id="header">
+				<h2>FooBar University</h2>
+			</div>
+		</div>
+		
+		<div id="container">
+			<h:messages globalOnly="true" />
+			
+			<h3>Update student</h3>
+			
+			<h:form id="form" style="margin-top:10px; ">
+				<h:panelGrid columns="3">
+					<h:outputLabel value="First name" />
+					<h:inputText value="#{studentBean.firstName}"
+								 id="first_name"
+								 required="true"
+								 requiredMessage="First name is mandatory" />
+					<h:message for="first_name" />
+					
+					<h:outputLabel value="Last name" />
+					<h:inputText value="#{studentBean.lastName}"
+								 id="last_name"
+								 required="true"
+								 requiredMessage="Last name is mandatory" />
+					<h:message for="last_name" />
+					
+					<h:outputLabel value="E-mail" />
+					<h:inputText value="#{studentBean.email}"
+								 id="email"
+								 required="true"
+								 requiredMessage="Email is mandatory" />
+					<h:message for="email" />
+					
+					<h:inputHidden value="#{studentBean.id}" />
+					<h:commandButton value="Update" styleClass="save"
+						action="#{studentController.updateStudent(studentBean)}" />
+					<h:outputLabel />
+				</h:panelGrid>
+				
+				<div style="clear:both;"></div>
+				<h:outputLink value="list-students.xhtml">Back to list</h:outputLink>
+			</h:form>
+		</div>
+	</h:body>
+</html>

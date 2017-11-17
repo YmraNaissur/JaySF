@@ -132,6 +132,30 @@ public class StudentController {
 	}
 	
 	/**
+	 * Delete student with specified ID from the database.
+	 * @param id - student's ID.
+	 */
+	public String deleteStudent(int id) {
+		logger.info("Deleting student with id = " + id);
+		
+		try {
+			// Delete student from the database
+			int affectedRows = studentDbUtil.deleteStudent(id);
+			logger.info(affectedRows + " rows were affected.");
+		} catch (Exception e) {
+			// Send this to the server logs
+			logger.log(Level.SEVERE, "Error deleting student with id = " + id);
+			
+			// Add error message for JSF page
+			addErrorMessage(e);
+			
+			return null;
+		}
+		
+		return "list-students";
+	}
+	
+	/**
 	 *  Send an error message to the faces context
 	 *  @param e - exception.
 	 */
